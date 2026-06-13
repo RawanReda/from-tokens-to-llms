@@ -1,7 +1,9 @@
 import pandas as pd
 import nltk
 import os
+import math
 import spacy
+from spacy.symbols import nsubj, VERB
 
 nltk.download('punkt_tab')
 nltk.download('cmudict')
@@ -79,6 +81,79 @@ def parse(df, pickle_file='parsed_novels.pkl'):
     df.to_pickle(pickle_file)
     return df
 
+def calculate_pmi(subj_freq_count : int, verb_freq : nltk.FreqDist, subj_verb_freq : nltk.FreqDist, subj_verb_list : list, total_count : int):
+    """
+    Calculate Pointwise Mutual Information (PMI) for a word pair.
+
+    Parameters:
+        subj_freq_count (int): Frequency count of the subject.  
+        verb_freq (nltk.FreqDist): Frequency distribution of verbs.  
+        subj_verb_freq (nltk.FreqDist): Frequency distribution of subject-verb pairs
+        subj_verb_list (list): List of verbs associated with the subject.  
+        total_count (int): Total number of tokens in the document.
+    """
+    # Calculate Pointwise Mutual Information (PMI) for a word pair
+    pmi = {}
+
+    # Use unique verb strings so repeated token objects don't appear multiple times
+    verbs = subj_verb_list
+    for verb in verbs:
+        verb_freq_count = verb_freq.freq(verb)
+        # Calculate PMI for this word pair
+        p_word1 = subj_freq_count / total_count
+        p_word2 = verb_freq_count / total_count
+        
+        subj_verb_freq_count = subj_verb_freq.freq(verb)
+        p_word_pair = subj_verb_freq_count / total_count
+
+        if p_word1 > 0 and p_word2 > 0 and p_word_pair > 0:
+            pmi[verb] = math.log(p_word_pair / (p_word1 * p_word2), 2)
+        else:
+            pmi[verb] = 0
+    # order the verbs by PMI score in descending order
+    pmi = dict(sorted(pmi.items(), key=lambda item: item[1], reverse=True))
+    for verb, score in pmi.items():
+        print(f"Verb: {verb}, PMI: {score}")
+    return pmi
+
+def extract_features(df):
+    # title of each novel, and the 10 most common syntatic subjects
+    # title of each novel and a list of verbs most likely to occur with the subject 'he' ordered by Pointwise Mutual Information (PMI) score
+    # title of each novel and a list of verbs most likely to occur with the subject 'she' ordered by Pointwise Mutual Information (PMI) score
+    for _, row in df.iterrows():
+        title = row['title'] 
+        parsed_doc = row['parsed']
+        # extract the 10 most common syntactic subjects
+        # lemma is more linguistically meaningful than the token text, so we will use lemma for the subject
+        subjects = [token.lemma_.lower() for token in parsed_doc if token.dep_ == 'nsubj']
+        verbs = [token.lemma_.lower() for token in parsed_doc if token.pos_ == 'VERB']
+        subject_freq = nltk.FreqDist(subjects)
+        verb_freq = nltk.FreqDist(verbs)
+        most_common_subjects = subject_freq.most_common(10)
+        print(f"Title: {title}")
+        print("Most common syntactic subjects:", most_common_subjects)
+
+        # extract verbs most likely to occur with the subject 'he' and 'she' ordered by PMI score
+        he_freq = subject_freq.freq('he')
+        she_freq = subject_freq.freq('she')
+
+        he_verbs = []
+        she_verbs = []
+        for possible_subject in parsed_doc:
+            if possible_subject.dep == nsubj and possible_subject.lemma_.lower() == 'he' and possible_subject.head.pos == VERB:
+                he_verbs.append(possible_subject.head.lemma_.lower())
+            elif possible_subject.dep == nsubj and possible_subject.lemma_.lower() == 'she' and possible_subject.head.pos == VERB:
+                she_verbs.append(possible_subject.head.lemma_.lower())
+        
+        # calculate PMI score for each verb
+        he_verb_freq = nltk.FreqDist(he_verbs)
+        she_verb_freq = nltk.FreqDist(she_verbs)
+        
+        print(f"PMI scores for subject 'he'")
+        he_verb_pmi = calculate_pmi(he_freq, verb_freq, he_verb_freq, set(he_verbs), len(parsed_doc))
+        
+        print(f"PMI scores for subject 'she':")
+        she_verb_pmi = calculate_pmi(she_freq, verb_freq, she_verb_freq, set(she_verbs), len(parsed_doc))
 
 def main():
     folder_path = r'..\cw-pack-2026\cw-pack-2026\texts\novels'
@@ -88,6 +163,7 @@ def main():
     ttr_dict = nltk_ttr(df)
     # print(ttr_dict)
     fk_dict = flesch_kincaid(df)
+    extract_features(df)
     # print(fk_dict)
 
 if __name__ == '__main__':
