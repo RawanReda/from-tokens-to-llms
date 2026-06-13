@@ -3,6 +3,7 @@ import nltk
 import os
 
 nltk.download('punkt_tab')
+nltk.download('cmudict')
 
 def read_novels(folder_path):
     # create a pandas dataframe with the cols:  text, title, author, year
@@ -28,7 +29,7 @@ def nltk_ttr(df):
     # use NLTK library only 
     # do not include punctuation and ignore case when counting types
     ttr_dict = {}
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         text = row['text']
         # tokenize the text using NLTK
         tokens = nltk.word_tokenize(text)
@@ -40,12 +41,41 @@ def nltk_ttr(df):
         ttr_dict[row['title']] = ttr
     return ttr_dict
 
+def flesch_kincaid(df):
+    # create a dictionary mapping title to its Flesch-Kincaid reading ease score
+    # use NLTK library for tokenization and CMU pronouncing dictionary for syllable counting
+    # do not include punctuation and ignore case when counting syllables
+    fk_dict = {}
+    cmu = nltk.corpus.cmudict.dict()
+    for _, row in df.iterrows():
+        text = row['text']
+        # tokenize the text using NLTK
+        tokens = nltk.word_tokenize(text)
+        # filter out punctuation and convert to lower case
+        tokens = [token.lower() for token in tokens if token.isalpha()]
+        # count syllables using CMU pronouncing dictionary
+        syllable_count = 0
+        for token in tokens:
+            syllables = cmu.get(token)
+            if syllables:
+                syllable_count += min(len(syllable) for syllable in syllables)
+
+        # calculate Flesch-Kincaid reading ease score
+        words = len(tokens)
+        sentences = len(nltk.sent_tokenize(text))
+        fk_score = 206.835 - 1.015 * (words / sentences) - 84.6 * (syllable_count / words) if sentences > 0 and words > 0 else 0
+        fk_dict[row['title']] = fk_score
+
+    return fk_dict
+
 
 def main():
     folder_path = r'..\cw-pack-2026\cw-pack-2026\texts\novels'
     df = read_novels(folder_path)
     ttr_dict = nltk_ttr(df)
     print(ttr_dict)
-
+    fk_dict = flesch_kincaid(df)
+    print(fk_dict)
+    
 if __name__ == '__main__':
     main()
