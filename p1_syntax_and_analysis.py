@@ -1,6 +1,7 @@
 import pandas as pd
 import nltk
 import os
+import spacy
 
 nltk.download('punkt_tab')
 nltk.download('cmudict')
@@ -68,14 +69,26 @@ def flesch_kincaid(df):
 
     return fk_dict
 
+def parse(df, pickle_file='parsed_novels.pkl'):
+    # add a new dataframe column called 'parsed' that contains the parsed and tokenized Doc object for each text using spaCy nlp method
+    # serialise the resulting df using the pickle format
+    # return the df 
+    # load the df from the pickle file and use it for the remainder of the coursework part
+    nlp = spacy.load("en_core_web_sm", disable=["tagger", "ner"])
+    df['parsed'] =df['text'].apply(nlp)
+    df.to_pickle(pickle_file)
+    return df
+
 
 def main():
     folder_path = r'..\cw-pack-2026\cw-pack-2026\texts\novels'
     df = read_novels(folder_path)
+    # df = parse(df)
+    df = pd.read_pickle('parsed_novels.pkl')
     ttr_dict = nltk_ttr(df)
-    print(ttr_dict)
+    # print(ttr_dict)
     fk_dict = flesch_kincaid(df)
-    print(fk_dict)
-    
+    # print(fk_dict)
+
 if __name__ == '__main__':
     main()
