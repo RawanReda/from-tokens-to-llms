@@ -57,22 +57,20 @@ def vectorize_text_and_train_models(df):
     # split the data into train and test data using stratified sampling with random seed of 26
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=random_state)
     
-    # train randomforest with n_estimators=300 and SVM with linear kernel classifiers on the training set 
+    def fit_and_report(model, model_name):
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        f1 = f1_score(y_test, y_pred, average='macro', zero_division=0)
+        report = classification_report(y_test, y_pred, zero_division=0)
+        print(f"{model_name} Macro F1 Score: ", f1)
+        print(f"{model_name} Classification Report: \n", report)
+        return model
+
     random_forest_model = RandomForestClassifier(n_estimators=300, random_state=random_state)
-    random_forest_model.fit(X_train, y_train)
-    y_pred_rf = random_forest_model.predict(X_test)
-    random_forest_f1_score = f1_score(y_test, y_pred_rf, average='macro', zero_division=0)
-    classification_report_rf = classification_report(y_test, y_pred_rf, zero_division=0)
-    print("Random Forest Macro F1 Score: ", random_forest_f1_score)
-    print("Random Forest Classification Report: \n", classification_report_rf)
+    fit_and_report(random_forest_model, "Random Forest")
 
     svm_model = SVC(kernel='linear', random_state=random_state)
-    svm_model.fit(X_train, y_train)
-    y_pred_svm = svm_model.predict(X_test)
-    svm_f1_score = f1_score(y_test, y_pred_svm, average='macro', zero_division=0)
-    classification_report_svm = classification_report(y_test, y_pred_svm, zero_division=0)
-    print("SVM Macro F1 Score: ", svm_f1_score)
-    print("SVM Classification Report: \n", classification_report_svm)
+    fit_and_report(svm_model, "SVM")
 
 
 def main():
