@@ -1,7 +1,7 @@
 import pandas as pd 
 import numpy as np
-
-# sklearn imports for TF-IDF and classifiers
+import nltk
+from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
@@ -38,7 +38,7 @@ def read_data(file_path):
     print("Dataframe shape after filtering: ", df.shape)
     return df
 
-def vectorize_text_and_train_models(df):
+def vectorize_text_and_train_models(df, custom_tokenizer=None):
     """
     Vectorize the speeches using TF-IDF vectorizer and train Random Forest and SVM classifiers on the training set.
 
@@ -49,7 +49,7 @@ def vectorize_text_and_train_models(df):
         None
     """
     # vectorize the speeches using TF-IDF vectorizer
-    vectorizer = TfidfVectorizer(stop_words='english', max_features=3000)
+    vectorizer = TfidfVectorizer(stop_words='english', max_features=3000, tokenizer=custom_tokenizer)
     X = vectorizer.fit_transform(df['speech'])
     y = df['party']
 
@@ -66,13 +66,18 @@ def vectorize_text_and_train_models(df):
         print(f"{model_name} Classification Report: \n", report)
         return model
 
-    random_forest_model = RandomForestClassifier(n_estimators=300, random_state=random_state)
+    random_forest_model = RandomForestClassifier(n_estimators=300, random_state=random_state, class_weight='balanced')
     fit_and_report(random_forest_model, "Random Forest")
 
-    svm_model = SVC(kernel='linear', random_state=random_state)
+    svm_model = SVC(kernel='linear', random_state=random_state, class_weight='balanced')
     fit_and_report(svm_model, "SVM")
 
-
+def custom_tokenizer(text):
+    stemmer = PorterStemmer()
+    tokens = [token.lower() for token in nltk.word_tokenize(text) if token.isalpha()]
+    stems = [stemmer.stem(token) for token in tokens]
+    return stems
+# think of a good customer tokenizer and compare results 
 def main():
     file_path = r'..\cw-pack-2026\cw-pack-2026\texts\hansard500.csv'
     df = read_data(file_path)
