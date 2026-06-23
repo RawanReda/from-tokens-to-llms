@@ -1,4 +1,4 @@
-from p2_feature_and_classification import read_data, print_f1_score_and_classification_model
+import p2_feature_and_classification
 from transformers import pipeline, AutoModelForSequenceClassification, AutoTokenizer, Trainer, TrainingArguments, DataCollatorWithPadding
 from datasets import load_dataset, Dataset
 from sklearn.model_selection import train_test_split
@@ -6,8 +6,8 @@ from sklearn.metrics import f1_score, classification_report
 import numpy as np
 import torch
 
-file_path = r'..\cw-pack-2026\cw-pack-2026\texts\hansard500.csv'
-df = read_data(file_path)
+file_path = "cw-pack-2026/texts/hansard500.csv"
+df = p2_feature_and_classification.read_data(file_path)
 
 
 X = df['speech']
@@ -25,6 +25,11 @@ test_dataset = Dataset.from_dict({
     "label": y_test.tolist()
 })
 
+def print_f1_score_and_classification_model(y_test, y_pred, model_name=""):
+    f1 = f1_score(y_test, y_pred, average='macro', zero_division=0)
+    report = classification_report(y_test, y_pred, zero_division=0)
+    print(f"{model_name} Macro F1 Score: ", f1)
+    print(f"{model_name} Classification Report: \n", report)
 
 # Get unique labels for classification
 unique_labels = df['party'].unique()
@@ -42,26 +47,26 @@ classifier = pipeline(
 y_pred = []
 for text in X_test.tolist():
     y_pred.append(classifier(text, candidate_labels)["labels"][0])
-
 print_f1_score_and_classification_model(y_test, y_pred, "zero shot")
 
 
 
 ## few shot 
 
-model = 'microsoft/Phi-4-mini-instruct'
+model = 'HuggingFaceTB/SmolLM2-135M-Instruct'
 tokenizer = AutoTokenizer.from_pretrained(model)
-pipeline = pipeline(
+generator = pipeline(
    'text-generation',
    model=model,
    tokenizer=tokenizer,
    torch_dtype=torch.bfloat16,
    device_map='auto',
 )
- 
-num_examples =5 
-examples_indices = [0,6,8]
 
+generator.model.generation_config.max_length = None
+
+example_indices = [0,6,8]
+few_shot_examples = ""
 for idx in example_indices:
     speech = X_train.iloc[idx]
     label = y_train.iloc[idx]
@@ -81,11 +86,18 @@ for speech in X_test.tolist():
     Party: 
     """
 
-    response = pipeline(prompt, max_length=100)
+    response = generator(prompt, max_new_tokens=4, max_length=None, do_sample=False)
+    generated_text = response[0]["generated_text"]
+    generated_answer = generated_text[len(prompt):].strip()
+    predicted = "Unknown"
+
     for party in candidate_labels:
-        if party in result:
-            y_pred.append(party)
+        if party.lower() in generated_answer.lower():
+            predicted = party
             break
+
+    y_pred.append(predicted)
+
 
 print("few shot ypred", y_pred)
 print_f1_score_and_classification_model(y_test, y_pred, "few shot")
