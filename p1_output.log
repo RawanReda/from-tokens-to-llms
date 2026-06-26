@@ -1,0 +1,110 @@
+Resolved 1 package in 493ms
+Downloading en-core-web-sm (12.2MiB)
+ Downloaded en-core-web-sm
+Prepared 1 package in 164ms
+Installed 1 package in 30ms
+ + en-core-web-sm==3.8.0 (from https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl)
+[38;5;2m✔ Download and installation successful[0m
+You can now load the package via spacy.load('en_core_web_sm')
+[nltk_data] Downloading package punkt_tab to /root/nltk_data...
+[nltk_data]   Package punkt_tab is already up-to-date!
+[nltk_data] Downloading package cmudict to /root/nltk_data...
+[nltk_data]   Package cmudict is already up-to-date!
+/workspace/from-tokens-to-llms/.venv/lib/python3.11/site-packages/spacy/pipeline/lemmatizer.py:187: UserWarning: [W108] The rule-based lemmatizer did not find POS annotation for one or more tokens. Check that your pipeline includes components that assign token.pos, typically 'tagger'+'attribute_ruler' or 'morphologizer'.
+  warnings.warn(Warnings.W108)
+Title: Sense_and_Sensibility
+Most common syntactic subjects: [('i', 1887), ('she', 1488), ('he', 1027), ('it', 930), ('you', 776), ('they', 446), ('elinor', 400), ('which', 273), ('marianne', 256), ('who', 236)]
+PMI scores for subject 'he'
+Verb: have, PMI: 21.115525224170728
+Verb: do, PMI: 19.948215422202047
+PMI scores for subject 'she':
+Verb: have, PMI: 20.492050204779233
+Verb: do, PMI: 19.794225686111776
+Title: North_and_South
+Most common syntactic subjects: [('i', 3606), ('she', 2723), ('he', 2467), ('it', 1478), ('you', 1327), ('margaret', 813), ('they', 765), ('that', 441), ('we', 413), ('who', 351)]
+PMI scores for subject 'he'
+Verb: 'd, PMI: 23.630257285682273
+Verb: have, PMI: 21.299926749799212
+Verb: do, PMI: 20.771621858680977
+PMI scores for subject 'she':
+Verb: have, PMI: 21.25135783123788
+Verb: do, PMI: 20.54340272934431
+Title: A_Tale_of_Two_Cities
+Most common syntactic subjects: [('i', 1886), ('he', 1736), ('it', 1094), ('you', 923), ('they', 527), ('she', 436), ('that', 372), ('who', 339), ('lorry', 233), ('defarge', 187)]
+PMI scores for subject 'he'
+Verb: have, PMI: 20.875305915711085
+Verb: do, PMI: 20.43433635244645
+PMI scores for subject 'she':
+Verb: have, PMI: 22.803418284399676
+Verb: do, PMI: 22.595647897428073
+Title: Erewhon
+Most common syntactic subjects: [('i', 1727), ('they', 760), ('it', 648), ('he', 580), ('we', 373), ('which', 331), ('who', 226), ('she', 141), ('that', 135), ('this', 114)]
+PMI scores for subject 'he'
+Verb: have, PMI: 20.75067172032413
+Verb: do, PMI: 20.602605041438252
+PMI scores for subject 'she':
+Verb: do, PMI: 23.52366385068205
+Verb: have, PMI: 22.104689936844036
+Title: The_American
+Most common syntactic subjects: [('i', 3326), ('he', 2681), ('you', 1943), ('she', 1513), ('it', 1228), ('newman', 1096), ('they', 428), ('that', 354), ('we', 276), ('bellegarde', 263)]
+PMI scores for subject 'he'
+Verb: have, PMI: 20.671916467083268
+Verb: do, PMI: 19.611225637720327
+PMI scores for subject 'she':
+Verb: have, PMI: 21.433012473754534
+Verb: do, PMI: 20.66387609023544
+Title: Dorian_Gray
+Most common syntactic subjects: [('i', 1650), ('he', 1485), ('you', 1038), ('it', 823), ('she', 425), ('that', 415), ('they', 305), ('who', 193), ('henry', 164), ('we', 160)]
+PMI scores for subject 'he'
+Verb: have, PMI: 19.933970327555397
+Verb: do, PMI: 19.68803798888092
+PMI scores for subject 'she':
+Verb: have, PMI: 21.669736487711063
+Verb: do, PMI: 21.668537738127437
+Title: Tess_of_the_DUrbervilles
+Most common syntactic subjects: [('she', 2125), ('i', 1824), ('he', 1747), ('you', 1073), ('it', 1019), ('they', 822), ('tess', 433), ('which', 343), ('who', 326), ('that', 264)]
+PMI scores for subject 'he'
+Verb: have, PMI: 21.22033816057585
+Verb: do, PMI: 21.05359468699832
+PMI scores for subject 'she':
+Verb: have, PMI: 21.204400586966354
+Verb: do, PMI: 20.263216813803957
+Title: The_Secret_Garden
+Most common syntactic subjects: [('he', 1870), ('she', 1766), ('i', 1378), ('it', 828), ('you', 617), ('mary', 530), ('they', 462), ('colin', 216), ('dickon', 165), ('martha', 150)]
+PMI scores for subject 'he'
+Verb: have, PMI: 20.196489751212344
+Verb: do, PMI: 19.480282717212937
+PMI scores for subject 'she':
+Verb: have, PMI: 20.365472017494543
+Verb: do, PMI: 19.40854073938643
+Title: Portrait_of_the_Artist
+Most common syntactic subjects: [('he', 1803), ('i', 584), ('it', 530), ('you', 523), ('they', 357), ('stephen', 256), ('that', 253), ('who', 149), ('she', 145), ('we', 144)]
+PMI scores for subject 'he'
+Verb: have, PMI: 19.340316534361417
+Verb: do, PMI: 18.81757654872312
+PMI scores for subject 'she':
+Verb: have, PMI: 23.352739611664077
+Title: The_Black_Moth
+Most common syntactic subjects: [('i', 2504), ('he', 1940), ('you', 1326), ('she', 1096), ('it', 467), ('that', 190), ('they', 161), ('carstares', 158), ('ye', 152), ('who', 144)]
+PMI scores for subject 'he'
+Verb: have, PMI: 20.039755341090178
+Verb: do, PMI: 19.669490257374903
+PMI scores for subject 'she':
+Verb: 'd, PMI: 23.02982268929173
+Verb: have, PMI: 20.926729196327624
+Verb: do, PMI: 20.235013020553236
+Title: Orlando
+Most common syntactic subjects: [('she', 1257), ('he', 788), ('it', 601), ('they', 365), ('orlando', 275), ('which', 269), ('we', 221), ('i', 195), ('who', 176), ('that', 151)]
+PMI scores for subject 'he'
+Verb: have, PMI: 20.58346370377004
+Verb: do, PMI: 19.374429665288613
+PMI scores for subject 'she':
+Verb: do, PMI: 19.82449577012207
+Verb: have, PMI: 19.60224697913478
+Title: Blood_Meridian
+Most common syntactic subjects: [('he', 2593), ('they', 1592), ('it', 513), ('i', 479), ('you', 470), ('judge', 293), ('that', 277), ('kid', 271), ('man', 244), ('glanton', 233)]
+PMI scores for subject 'he'
+Verb: have, PMI: 20.278519739613493
+Verb: do, PMI: 19.582368215517302
+PMI scores for subject 'she':
+Verb: have, PMI: 25.231447364624408

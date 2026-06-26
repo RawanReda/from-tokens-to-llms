@@ -4,7 +4,14 @@ import os
 import math
 import spacy
 from spacy.symbols import nsubj, VERB
+from spacy.cli import download
 
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
+    
 nltk.download('punkt_tab')
 nltk.download('cmudict')
 
@@ -156,9 +163,9 @@ def extract_features(df):
         she_verb_pmi = calculate_pmi(she_freq, verb_freq, she_verb_freq, set(she_verbs), len(parsed_doc))
 
 def main():
-    folder_path = r'..\cw-pack-2026\cw-pack-2026\texts\novels'
+    folder_path = 'cw-pack-2026/texts/novels'
     df = read_novels(folder_path)
-    # df = parse(df)
+    df = parse(df)
     df = pd.read_pickle('parsed_novels.pkl')
     ttr_dict = nltk_ttr(df)
     # print(ttr_dict)

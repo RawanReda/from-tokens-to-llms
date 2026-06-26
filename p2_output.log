@@ -1,0 +1,128 @@
+[nltk_data] Downloading package averaged_perceptron_tagger_eng to
+[nltk_data]     /root/nltk_data...
+[nltk_data]   Package averaged_perceptron_tagger_eng is already up-to-
+[nltk_data]       date!
+[nltk_data] Downloading package wordnet to /root/nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+[nltk_data] Downloading package punkt_tab to /root/nltk_data...
+[nltk_data]   Package punkt_tab is already up-to-date!
+[nltk_data] Downloading package stopwords to /root/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+['Conservative', 'Labour', 'Scottish National Party', 'Liberal Democrat']
+Dataframe shape after filtering:  (2112, 7)
+====================================================================================================
+Results without custom_tokenizer:
+Random Forest Macro F1 Score:  0.5469721374323084
+Random Forest Classification Report: 
+                          precision    recall  f1-score   support
+
+           Conservative       0.78      0.85      0.81       250
+                 Labour       0.67      0.61      0.64       125
+       Liberal Democrat       0.67      0.13      0.22        15
+Scottish National Party       0.52      0.52      0.52        33
+
+               accuracy                           0.73       423
+              macro avg       0.66      0.53      0.55       423
+           weighted avg       0.72      0.73      0.72       423
+
+SVM Macro F1 Score:  0.5818125963853816
+SVM Classification Report: 
+                          precision    recall  f1-score   support
+
+           Conservative       0.81      0.82      0.81       250
+                 Labour       0.61      0.67      0.64       125
+       Liberal Democrat       1.00      0.13      0.24        15
+Scottish National Party       0.64      0.64      0.64        33
+
+               accuracy                           0.74       423
+              macro avg       0.77      0.56      0.58       423
+           weighted avg       0.75      0.74      0.73       423
+
+====================================================================================================
+Adjust the parameters of the Tfidfvectorizer so that unigrams, bi-grams and tri-grams will be considered as features
+Random Forest Macro F1 Score:  0.47922836368458277
+Random Forest Classification Report: 
+                          precision    recall  f1-score   support
+
+           Conservative       0.78      0.80      0.79       250
+                 Labour       0.57      0.60      0.59       125
+       Liberal Democrat       0.00      0.00      0.00        15
+Scottish National Party       0.51      0.58      0.54        33
+
+               accuracy                           0.69       423
+              macro avg       0.47      0.49      0.48       423
+           weighted avg       0.67      0.69      0.68       423
+
+SVM Macro F1 Score:  0.5383579016315766
+SVM Classification Report: 
+                          precision    recall  f1-score   support
+
+           Conservative       0.83      0.78      0.81       250
+                 Labour       0.61      0.70      0.65       125
+       Liberal Democrat       0.14      0.07      0.09        15
+Scottish National Party       0.57      0.64      0.60        33
+
+               accuracy                           0.72       423
+              macro avg       0.54      0.55      0.54       423
+           weighted avg       0.72      0.72      0.72       423
+
+====================================================================================================
+Results with custom_tokenizer:
+with only unigrams:
+/workspace/from-tokens-to-llms/.venv/lib/python3.11/site-packages/sklearn/feature_extraction/text.py:527: UserWarning: The parameter 'token_pattern' will not be used since 'tokenizer' is not None'
+  warnings.warn(
+Random Forest Macro F1 Score:  0.5773417326534583
+Random Forest Classification Report: 
+                          precision    recall  f1-score   support
+
+           Conservative       0.79      0.87      0.83       250
+                 Labour       0.68      0.64      0.66       125
+       Liberal Democrat       0.75      0.20      0.32        15
+Scottish National Party       0.58      0.45      0.51        33
+
+               accuracy                           0.74       423
+              macro avg       0.70      0.54      0.58       423
+           weighted avg       0.74      0.74      0.73       423
+
+SVM Macro F1 Score:  0.5377739967252101
+SVM Classification Report: 
+                          precision    recall  f1-score   support
+
+           Conservative       0.83      0.84      0.84       250
+                 Labour       0.62      0.68      0.65       125
+       Liberal Democrat       0.50      0.07      0.12        15
+Scottish National Party       0.55      0.55      0.55        33
+
+               accuracy                           0.74       423
+              macro avg       0.63      0.53      0.54       423
+           weighted avg       0.74      0.74      0.73       423
+
+with bigrams and trigrams:
+/workspace/from-tokens-to-llms/.venv/lib/python3.11/site-packages/sklearn/feature_extraction/text.py:527: UserWarning: The parameter 'token_pattern' will not be used since 'tokenizer' is not None'
+  warnings.warn(
+Random Forest Macro F1 Score:  0.5832067736185383
+Random Forest Classification Report: 
+                          precision    recall  f1-score   support
+
+           Conservative       0.82      0.85      0.83       250
+                 Labour       0.66      0.66      0.66       125
+       Liberal Democrat       0.60      0.20      0.30        15
+Scottish National Party       0.55      0.55      0.55        33
+
+               accuracy                           0.74       423
+              macro avg       0.65      0.56      0.58       423
+           weighted avg       0.74      0.74      0.74       423
+
+SVM Macro F1 Score:  0.5498362227285867
+SVM Classification Report: 
+                          precision    recall  f1-score   support
+
+           Conservative       0.85      0.83      0.84       250
+                 Labour       0.62      0.72      0.66       125
+       Liberal Democrat       1.00      0.07      0.12        15
+Scottish National Party       0.60      0.55      0.57        33
+
+               accuracy                           0.75       423
+              macro avg       0.77      0.54      0.55       423
+           weighted avg       0.76      0.75      0.74       423
+

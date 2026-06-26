@@ -12,6 +12,8 @@ from sklearn.metrics import f1_score, classification_report
 
 nltk.download('averaged_perceptron_tagger_eng')
 nltk.download('wordnet')
+nltk.download('punkt_tab')
+nltk.download('stopwords')
 
 def read_data(file_path):
     """
@@ -33,6 +35,7 @@ def read_data(file_path):
     df['party'] = df['party'].replace('Labour (Co-op)', 'Labour')
     # remove any rows where the value of the 'party' column is not in the 4 most common party names 
     most_common_parties = df['party'].value_counts().nlargest(4).index.tolist()
+    print(most_common_parties)
     df = df[df['party'].isin(most_common_parties)]
     # remove the speaker value
     df = df.drop(columns=['speakername'])
@@ -42,7 +45,7 @@ def read_data(file_path):
     print("Dataframe shape after filtering: ", df.shape)
     return df
 
-def vectorize_text_and_train_models(df, stop_words=None, custom_tokenizer=None):
+def vectorize_text_and_train_models(df, ngram_range= (1,1), stop_words=None, custom_tokenizer=None):
     """
     Vectorize the speeches using TF-IDF vectorizer and train Random Forest and SVM classifiers on the training set.
 
@@ -53,7 +56,7 @@ def vectorize_text_and_train_models(df, stop_words=None, custom_tokenizer=None):
         None
     """
     # vectorize the speeches using TF-IDF vectorizer
-    vectorizer = TfidfVectorizer(stop_words=stop_words, max_features=3000, tokenizer=custom_tokenizer)
+    vectorizer = TfidfVectorizer(stop_words=stop_words, ngram_range=ngram_range, max_features=3000, tokenizer=custom_tokenizer)
     X = vectorizer.fit_transform(df['speech'])
     y = df['party']
 
@@ -124,18 +127,38 @@ def custom_tokenizer(text):
 
 # think of a good customer tokenizer and compare results 
 def main():
-    file_path = r'..\cw-pack-2026\cw-pack-2026\texts\hansard500.csv'
+    file_path = "cw-pack-2026/texts/hansard10000.csv"
     df = read_data(file_path)
 
+    print("="*100)
     print("Results without custom_tokenizer:")
-    vectorize_text_and_train_models(df, stop_words="english")
+    vectorize_text_and_train_models(df, ngram_range =(1,1), stop_words="english")
+    
+    print("="*100)
+    print("Adjust the parameters of the Tfidfvectorizer so that unigrams, bi-grams and tri-grams will be considered as features")
+    vectorize_text_and_train_models(df, ngram_range =(1,3), stop_words=None)
 
+    print("="*100)
     print("Results with custom_tokenizer:")
-    vectorize_text_and_train_models(df, stop_words=None, custom_tokenizer=custom_tokenizer)
+    print("with only unigrams:")
+    vectorize_text_and_train_models(df, ngram_range =(1,1), stop_words=None, custom_tokenizer=custom_tokenizer)
+
+    print("with bigrams and trigrams:")
+    vectorize_text_and_train_models(df, ngram_range =(1,3), stop_words=None, custom_tokenizer=custom_tokenizer)
+
 
     # based on the output, custom_tokenizer improves performance of random forest model but has no effect on SVC classifier 
     # for the random forest model, the macro f1 score without custom tokenizer is 34%, while with custom tokenizer, it is increased to 42%
     # precision scores for conservative and labour parties is higher when custom tokenizer is applied.
     # scottish national is never correctly predicted likey due to the small training instance of this class. 
+
+
+    """
+    Based on the output, the custom tokenizer with unigrams, bigrams, and trigrams produced the best Random Forest performance, achieving a macro F1 score of 58%. Adjusting the n-grams to include bi-grams and tri-grams only increased the performance by about 1–2% for both SVM and Random Forest.
+
+    Meanwhile, the best overall SVM performance was obtained without a custom tokenizer, using only unigrams, also with a macro F1 score of 58%. Using unigrams, bi-grams, and tri-grams with TF-IDF and the custom tokenizer reduced performance by 7% in Random Forest and 5% in SVM.
+
+    The F1 score is consistently higher for Conservative than Labour, while Scottish National Party ranks third without the custom tokenizer and fourth with it for both Random Forest and SVM.
+    """
 if __name__ == '__main__':
     main()
